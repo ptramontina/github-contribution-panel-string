@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Github Contribution Panel String
+
+  Function to write a string on the Github contribution panel, based on commits
+  
+Globals:
+  Function:
+    Timeout: 20
+
+Resources:
+  GithubContributionPanelStringFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: github-contribution-panel-string/
+      Handler: app.lambdaHandler
+      Environment:
+        Variables:
+          GIT_USER: 'your-user'
+          GIT_TOKEN: 'your-encrypted-token'
+          GIT_REPO: 'your-repo'
+          GIT_BASE_URL: 'http://api.github.com'
+          GIT_PATH: 'path/to/the/file.txt'
+          STRING_TO_PRINT: 'sample'
+          COMMIT_NUMBER: '5'
+          INITIAL_DATE: 'First top/right date of the contribution panel'
+      Runtime: nodejs14.x
+      Events:
+        ScheduleEvent:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 10 * * ? *)
+  GithubContributionPanelStringKey:
+    Type: 'AWS::KMS::Key'
+    Properties:
+      Description: Symmetric KMS key
+      EnableKeyRotation: true
+      PendingWindowInDays: 20
+      KeyPolicy:
+        Version: 2012-10-17
+        Id: key-default-1
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action: 'kms:*'
+            Resource: '*'
+          - Sid: Allow administration of the key
+            Effect: Allow
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Action:
+              - 'kms:Create*'
+              - 'kms:Describe*'
+              - 'kms:Enable*'
+              - 'kms:List*'
+              - 'kms:Put*'
+              - 'kms:Update*'
+              - 'kms:Revoke*'
+              - 'kms:Disable*'
+              - 'kms:Get*'
+              - 'kms:Delete*'
+              - 'kms:ScheduleKeyDeletion'
+              - 'kms:CancelKeyDeletion'
+            Resource: '*'
+          - Sid: Allow use of the key
+            Effect: Allow
+            Principal:
+              AWS: !GetAtt GithubContributionPanelStringFunctionRole.Arn
+            Action:
+              - 'kms:DescribeKey'
+              - 'kms:Encrypt'
+              - 'kms:Decrypt'
+              - 'kms:ReEncrypt*'
+              - 'kms:GenerateDataKey'
+              - 'kms:GenerateDataKeyWithoutPlaintext'
+            Resource: '*'
+
+Outputs:
+  GithubContributionPanelString:
+    Description: "Function to write a string on the Github contribution panel, based on commits"
+    Value: !GetAtt GithubContributionPanelStringFunction.Arn
+  Variables:
+    Description: "Don't forget to fill all required variables, and encrypt the token with the correct key:"
+    Value: !GetAtt GithubContributionPanelStringKey.Arn
