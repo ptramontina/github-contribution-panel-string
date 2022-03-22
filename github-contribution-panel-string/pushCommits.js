@@ -15,7 +15,7 @@ async function pushCommits() {
       let response = await axiosInstance.get(`/repos/${gitUser}/${gitRepo}/contents/${gitPath}`);
       let sha = response.data.sha;
 
-      console.log(`Executing commit at ${currentDay.format('YYYY-MM-DD HH:mm:ss')}`);
+      console.log(`Executing commit ${i+1} from ${commitNumber} at ${currentDay.format('YYYY-MM-DD HH:mm:ss')}`);
   
       let putResponse = await axiosInstance.put(`/repos/${gitUser}/${gitRepo}/contents/${gitPath}`, {
         content: Buffer.from(`Commit at ${currentDay.format('YYYY-MM-DD HH:mm:ss')}`).toString('base64'),

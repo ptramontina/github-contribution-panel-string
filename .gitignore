@@ -125,3 +125,4 @@ $RECYCLE.BIN/
 
 # AWS SAM
 .aws-sam/
+samconfig.toml
