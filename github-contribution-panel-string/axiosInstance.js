@@ -4,7 +4,7 @@ module.exports = axios.create({
   baseURL: process.env.GIT_BASE_URL,
   headers: {
     common: {
-      authorization: `Bearer ${global.decryptedToken}`
+      authorization: `Bearer ${process.env.GIT_TOKEN}`
     }
   }
 });

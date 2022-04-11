@@ -1,25 +1,3 @@
-const AWS = require('aws-sdk');
-const kms = new AWS.KMS();
-
-const decrypted = {};
-
-exports.decrypt = async (secretName, functionName) => {
-  if (decrypted[secretName]) {
-    return decrypted[secretName];
-  }
-
-  const req = { 
-    CiphertextBlob: Buffer.from(process.env[secretName], 'base64'),
-    EncryptionContext: { LambdaFunctionName: functionName }
-  };
-  
-  const data = await kms.decrypt(req).promise();
-  const decryptedVal = data.Plaintext.toString('ascii');
-
-  decrypted[secretName] = decryptedVal;
-  return decryptedVal;
-}
-
 exports.charMap = {
   'a': [],
   'b': [],

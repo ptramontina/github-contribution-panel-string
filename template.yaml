@@ -18,7 +18,7 @@ Resources:
       Environment:
         Variables:
           GIT_USER: 'your-user'
-          GIT_TOKEN: 'your-encrypted-token'
+          GIT_TOKEN: 'your-token'
           GIT_REPO: 'your-repo'
           GIT_BASE_URL: 'http://api.github.com'
           GIT_PATH: 'path/to/the/file.txt'
@@ -30,58 +30,9 @@ Resources:
         ScheduleEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(0 10 * * ? *)
-  GithubContributionPanelStringKey:
-    Type: 'AWS::KMS::Key'
-    Properties:
-      Description: Symmetric KMS key
-      EnableKeyRotation: true
-      PendingWindowInDays: 20
-      KeyPolicy:
-        Version: 2012-10-17
-        Id: key-default-1
-        Statement:
-          - Sid: Enable IAM User Permissions
-            Effect: Allow
-            Principal:
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
-            Action: 'kms:*'
-            Resource: '*'
-          - Sid: Allow administration of the key
-            Effect: Allow
-            Principal:
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
-            Action:
-              - 'kms:Create*'
-              - 'kms:Describe*'
-              - 'kms:Enable*'
-              - 'kms:List*'
-              - 'kms:Put*'
-              - 'kms:Update*'
-              - 'kms:Revoke*'
-              - 'kms:Disable*'
-              - 'kms:Get*'
-              - 'kms:Delete*'
-              - 'kms:ScheduleKeyDeletion'
-              - 'kms:CancelKeyDeletion'
-            Resource: '*'
-          - Sid: Allow use of the key
-            Effect: Allow
-            Principal:
-              AWS: !GetAtt GithubContributionPanelStringFunctionRole.Arn
-            Action:
-              - 'kms:DescribeKey'
-              - 'kms:Encrypt'
-              - 'kms:Decrypt'
-              - 'kms:ReEncrypt*'
-              - 'kms:GenerateDataKey'
-              - 'kms:GenerateDataKeyWithoutPlaintext'
-            Resource: '*'
+            Schedule: cron(0 14 * * ? *)
 
 Outputs:
   GithubContributionPanelString:
     Description: "Function to write a string on the Github contribution panel, based on commits"
     Value: !GetAtt GithubContributionPanelStringFunction.Arn
-  Variables:
-    Description: "Don't forget to fill all required variables, and encrypt the token with the correct key:"
-    Value: !GetAtt GithubContributionPanelStringKey.Arn
