@@ -12,11 +12,11 @@ module.exports = async function () {
 
   const point = currentDayDiff / 28;
   const integerPoint = parseInt(point);
-  const pointToPrint = (point - integerPoint) * 28;
+  const pointToPrint = Math.round((point - integerPoint) * 28);
 
   const character = integerPoint / stringToDisplay.length;
   const integerCharacter = parseInt(character);
-  const characterToPrint = (character - integerCharacter) * stringToDisplay.length;
+  const characterToPrint = Math.round((character - integerCharacter) * stringToDisplay.length);
 
   const shouldPrint = charMap[stringToDisplay.charAt(characterToPrint)].includes(pointToPrint);
   if (shouldPrint) {
