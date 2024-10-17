@@ -8,3 +8,4 @@ It uses a lambda function, and a SAM template.
 In order to do correctly, you should build, deploy, and set the variables on AWS.
 Since I was not able to automatically encrypt the token, you should do it manually, by going to AWS console, and encrypting using the key created by this template.
 
+![image](https://github.com/user-attachments/assets/7707b91e-f388-4d30-836a-c0d2a365ed97)
